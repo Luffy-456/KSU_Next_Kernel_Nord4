@@ -61,7 +61,7 @@ jobs:
       - name: 4. Generate Pretty Release Tag
         id: generate_tag
         run: |
-          TAG="NikaKernel-OnePlusNord4-v$(date +'%Y.%m.%d-%H%M')-IST"
+          TAG="JoyBoyKernel-OnePlusNord4-v$(date +'%Y.%m.%d-%H%M')-IST"
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: 5. Download Build Artifacts
