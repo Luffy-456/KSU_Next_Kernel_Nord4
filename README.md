@@ -40,7 +40,7 @@
 
 💡 *Result: Your device reboots with update and root still present!*
 
-#### 🛡️ Method 2: GKI Kernel Users (Custom Kernel with SUFS)
+#### 🛡️ Method 2: Custom Kernel Users (Custom Kernel with SUSFS)
 
 1. Download the **full OTA** update.
 2. Install it using **Local Update**.
