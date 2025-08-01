@@ -15,11 +15,13 @@
 - **[Susfs Module](https://github.com/sidex15/susfs4ksu-module/releases)**
 - *For ZRAM users:* Download the ZRAM module from the specific kernel’s release section (**see caution!**)
 
-> [!CAUTION]  ⚠️ 
+------
+> [!CAUTION]
 > - Do **NOT** install modules during root-preserving updates!
 > - **Press Volume Down** when installing any module!
 > - If you enabled ZRAM, install the **ZRAM module BEFORE rebooting** after using AnyKernel3.
 > - Important: If you plan to use this repository to build the 5.10 kernel, please note that ZRAM is not supported for this version, as the zram.ko module path is unavailable. However, the AnyKernel3-generated output remains functional and can still be used.
+------
 
 ## 🚀 How To Flash / Update
 
