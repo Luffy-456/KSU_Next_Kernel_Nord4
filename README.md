@@ -19,7 +19,7 @@
 > - Do **NOT** install modules during root-preserving updates!
 > - **Press Volume Down** when installing any module!
 > - If you enabled ZRAM, install the **ZRAM module BEFORE rebooting** after using AnyKernel3.
-> - For kernel version 5.10, ZRAM is **not supported** (the `zram.ko` module path cannot be found), but AnyKernel3 output is still usable.
+> - Important: If you plan to use this repository to build the 5.10 kernel, please note that ZRAM is not supported for this version, as the zram.ko module path is unavailable. However, the AnyKernel3-generated output remains functional and can still be used.
 
 ## 🚀 How To Flash / Update
 
