@@ -1,88 +1,78 @@
-## Useful Links:
+# 🌟 OnePlus Nord 4 Custom Kernel Guide
+
+## 📎 Useful Links
 
 [![Static Badge](https://img.shields.io/badge/OnePlus%20Kernel%20Manifest%20Nord%204-EB0029?style=for-the-badge&logo=OnePlus)](https://github.com/OnePlusOSS/kernel_manifest/tree/oneplus/sm7675)   [![Static Badge](https://img.shields.io/badge/Follow-Telegram_Updates_Channel-blue?style=for-the-badge&logo=Telegram)](https://t.me/luffyop_updates)  [![Static Badge](https://img.shields.io/badge/OnePlus_Nord_4-Boot_Image_Channel-blue?style=for-the-badge&logo=Telegram)](https://t.me/boot_imgs_nord4/2)
 
-------
-## Requirement:
+## ⚡ Requirements
 
-* Bootloader Unlocked 🔓
+- **Unlocked Bootloader** 🔓  
+- Make sure to check your compatible **OxygenOS version** in the kernel’s release notes.
+- **Working Brain** 🧠
 
-* To know on which version of OxygenOS you can flash. Check the release notes of the respected kernel
- 
-* Working Brain 🧠
-------
+## 🧩 Required Modules
 
-## Required Modules
+- **[Susfs Module](https://github.com/sidex15/susfs4ksu-module/releases)**
+- *For ZRAM users:* Download the ZRAM module from the specific kernel’s release section (**see caution!**)
 
-* [Susfs Module](https://github.com/sidex15/susfs4ksu-module/releases)
-* If you want to use ZRAM download the module form the repective kernel release section **Must Read Caution**
+> ⚠️ **CAUTION**
+> - Do **NOT** install modules during root-preserving updates!
+> - **Press Volume Down** when installing any module!
+> - If you enabled ZRAM, install the **ZRAM module BEFORE rebooting** after using AnyKernel3.
+> - For kernel version 5.10, ZRAM is **not supported** (the `zram.ko` module path cannot be found), but AnyKernel3 output is still usable.
 
-------
-> [!CAUTION]
-> Do **NOT** install modules duri ng **root-preserving updates**!
->
-> Remember to press **Volume Down** when installing the module!
->
-> If you have enabled the `ZRAM` algorithm, make sure to install the `ZRAM` module
-> **before rebooting** after flashing with `Anykernel3`. You may need to adjust some parameters manually.The 5.10 kernel is not supported `ZRAM` , as the `zram.ko` module path could not be found.However, the generated ``Anykernel3`` is still usable.
-------
+## 🚀 How To Flash / Update
 
-------
-# How TO :
+### 🔥 Flashing the Kernel
 
-### Flash Kernel :
+- Get [Kernel Flasher](https://github.com/fatalcoder524/KernelFlasher/releases) (recommended for ease & safety!)
 
-* Use [Kernel Flasher](https://github.com/fatalcoder524/KernelFlasher/releases)
+### ♻️ Updating Without Losing Root
 
-### Update Your Device Without Losing Root Access  
+#### 🧲 Method 1: Magisk or KernelSU (LKM) Users
 
-#### Method 1: For Magisk or KernelSU (LKM) Users  
-If you're rooted using Magisk or KernelSU, follow these steps to update while preserving root:  
+1. Download **full OTA** update for your device.
+2. Install via device’s **Local Update** feature.
+3. _Before restarting:_
+   - Open **Magisk/KernelSU**
+   - Tap **Install → Install to Inactive Slot (After OTA)**
+4. Go back to updater and tap **Restart**.
 
-1. Download the full OTA update for your device.  
-2. Install the update using Local Update (via your device’s system updater).  
-3. Before restarting:  
-   - Open Magisk/KernelSU.  
-   - Tap "Install" → "Install to Inactive Slot (After OTA)".  
-4. Once done, return to the updater and tap "Restart".  
+💡 *Result: Your device reboots with update and root still present!*
 
-Your device will reboot with the update applied and root access intact.  
+#### 🛡️ Method 2: GKI Kernel Users (Custom Kernel with SUFS)
 
-#### Method 2: For GKI Kernel Users (Custom Kernel with SUFS)  
-If you’re using a patched GKI kernel (e.g., SUFS-modified kernel), follow these steps:  
+1. Download the **full OTA** update.
+2. Install it using **Local Update**.
+3. _Before restarting:_
+   - Open **Kernel Flasher**
+   - **Flash AnyKernel3 (AK3)** to the inactive slot—don’t pick other options!
+4. Return to updater and tap **Restart**.
 
-1. Download the full OTA update.  
-2. Install the update via Local Update (in the system updater).  
-3. Before restarting:  
-   - Open Kernel Flasher.  
-   - Flash AnyKernel3 (AK3) to the inactive slot.  
-   - Do not select any additional options after flashing.  
-4. Return to the updater and tap "Restart".  
+💡 *Result: Keep root and kernel after update!*
 
-Your device will boot into the updated system with the custom kernel and root preserved.  
+## 📝 Notes & Tips
 
-## Important Notes:  
-* Always back up your data before updating.  
-* Ensure you’re using the full OTA, not an incremental update.  
-* If using Magisk Delta or a custom Magisk fork, the steps may vary slightly.  
+- 🔄 **Back up** your data before any update!
+- Use **full OTA**, not incremental updates.
+- If on **Magisk Delta** or a **custom Magisk fork**, your steps may be a bit different.
 
-This ensures a smooth update process without losing root or kernel modifications.
+## ✨ Kernel Features
 
-------
 
-------
-## Features
+✅ SukiSU Ultra
+✅ SUSFS
+✅ VFS HOOK
+✅ Magic Mount Support (KPM)
+✅ BBR Support
+✅ ZRAM
 
-<pre> ✅ SukiSU Ultra - ✅ SUSFS  - ✅ VFS HOOK - ✅ Magic Mount Support (KPM) - ✅ BBR Support - ✅ ZRAM </pre>
-------
 
-------
-# Thanks to :
+## 🙏 Credits
 
-* [SukiSU](https://github.com/SukiSU-Ultra/SukiSU-Ultra)
-* [ZRAM-Module](https://github.com/FurLC/ZRAM-Module)
+- [SukiSU Ultra](https://github.com/SukiSU-Ultra/SukiSU-Ultra)
+- [ZRAM Module](https://github.com/FurLC/ZRAM-Module)
 
-------
-
-> [!CAUTION]
-> PS. I won't be responsible for anything caused by this. Do at your own risk!
+> ⚠️ **Disclaimer:**  
+> Flashing custom kernels always comes with risk!  
+> **Proceed at your own responsibility. Have fun, but be careful!**

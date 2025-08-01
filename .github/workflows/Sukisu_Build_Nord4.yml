@@ -45,7 +45,7 @@ on:
         default: true
       KPM:
         type: boolean
-        description: "Enable Kernel Patch Module (KPM)?"
+        description: "Enable Kernel Patch Module (KPM) / Magic Mount Support ?"
         required: true
         default: true
       ZRAM:
