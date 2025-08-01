@@ -75,6 +75,6 @@
 - [SukiSU Ultra](https://github.com/SukiSU-Ultra/SukiSU-Ultra)
 - [ZRAM Module](https://github.com/FurLC/ZRAM-Module)
 
-> ⚠️ **Disclaimer:**  
+> [!Disclaimer] 
 > Flashing custom kernels always comes with risk!  
 > **Proceed at your own responsibility. Have fun, but be careful!**
