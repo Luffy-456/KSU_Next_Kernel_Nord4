@@ -15,7 +15,7 @@
 - **[Susfs Module](https://github.com/sidex15/susfs4ksu-module/releases)**
 - *For ZRAM users:* Download the ZRAM module from the specific kernel’s release section (**see caution!**)
 
-> ⚠️ **[!CAUTION]**
+> ⚠️ [!CAUTION]
 > - Do **NOT** install modules during root-preserving updates!
 > - **Press Volume Down** when installing any module!
 > - If you enabled ZRAM, install the **ZRAM module BEFORE rebooting** after using AnyKernel3.
