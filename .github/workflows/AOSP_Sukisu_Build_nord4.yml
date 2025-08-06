@@ -534,97 +534,61 @@ jobs:
           sed -i 's/^CONFIG_LTO_CLANG_FULL=y/CONFIG_LTO_CLANG_THIN=y/' "$DEFCONFIG"
           sed -i 's/^CONFIG_LTO_CLANG_NONE=y/CONFIG_LTO_CLANG_THIN=y/' "$DEFCONFIG"
           grep -q '^CONFIG_LTO_CLANG_THIN=y' "$DEFCONFIG" || echo 'CONFIG_LTO_CLANG_THIN=y' >> "$DEFCONFIG"
+      - name: Commit Patches to Create Clean Baseline
+        run: |
+          cd kernel_workspace/kernel_platform/msm-kernel
+          # Git requires a user identity to commit
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          # Add all modified/untracked files and commit them
+          git add .
+          git commit --allow-empty -m "CI: Apply custom patches"
       - name: Build Kernel with Custom Configs
-        if: ${{ github.event.inputs.FAST_BUILD == 'true' }}
         id: build_kernel
         run: |
-          # --- Toolchain and Environment Setup (same as your original script) ---
+          # --- Environment Setup ---
           KERNEL_VERSION="${{ env.KERNEL_VERSION }}"
-          if [[ "$KERNEL_VERSION" == "6.6" ]]; then
-            CLANG_PATH="clang-r510928"
-            CLANG_DIR="prebuilts"
-          elif [[ "$KERNEL_VERSION" == "6.1" ]]; then
+          if [[ "$KERNEL_VERSION" == "6.1" ]]; then
             CLANG_PATH="clang-r547379"
             CLANG_DIR="prebuilts"
-          elif [[ "$KERNEL_VERSION" == "5.15" ]]; then
-            CLANG_PATH="clang-r450784e"
-            CLANG_DIR="prebuilts"
-          elif [[ "$KERNEL_VERSION" == "5.10" ]]; then
-            CLANG_PATH="clang-r416183b"
-            CLANG_DIR="prebuilts-master"
-            USE_LLVM_IAS=true
+          # Add other elif blocks for other kernel versions if needed
           else
-            echo "fallback=true" >> "$GITHUB_OUTPUT"
-            echo "⚠️ Current kernel version \"$KERNEL_VERSION\" has no corresponding clang toolchain, falling back to the official build script"
-            echo "Please consider disabling FAST_BUILD or adding the clang path for this version"
-            exit 0
+            echo "No specific clang version found for KERNEL_VERSION=$KERNEL_VERSION, using default."
+            CLANG_PATH="clang-r547379"
+            CLANG_DIR="prebuilts"
           fi
-      
-          echo "Setting up build environment..."
+
           export PATH="$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/$CLANG_DIR/clang/host/linux-x86/$CLANG_PATH/bin:$PATH"
           export PATH="/usr/lib/ccache:$PATH"
           export CC="ccache clang"
-          sudo apt-get update
-          sudo apt-get install -y libelf-dev ccache
-      
+          sudo apt-get -y install libelf-dev ccache
+
           cd kernel_workspace/kernel_platform/msm-kernel
-      
-          # --- Build Configuration ---
-          echo "Configuring build arguments..."
-          MAKE_ARGS="LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+
+          # --- Build Arguments ---
+          MAKE_ARGS="LLVM=1 O=out ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
             RUSTC=../../prebuilts/rust/linux-x86/1.73.0b/bin/rustc \
             PAHOLE=../../prebuilts/kernel-build-tools/linux-x86/bin/pahole \
             LD=ld.lld HOSTLD=ld.lld KCFLAGS+=-Wno-error"
-          
-          if [[ "$USE_LLVM_IAS" == "true" ]]; then
-            MAKE_ARGS="LLVM_IAS=1 $MAKE_ARGS"
-          fi
-      
-          # Define paths to your config files for clarity
-          GKI_DEFCONFIG=gki_defconfig
+
+          # --- Config Paths ---
+          GKI_DEFCONFIG=arch/arm64/configs/gki_defconfig
           VENDOR_PINEAPPLE_CONFIG=arch/arm64/configs/vendor/pineapple_GKI.config
-          VENDOR_OPLUS_CONFIG=arch/arm64/configs/vendor/oplus/pineapple_GKI.config
+          VENDOR_OPLUS_CONFIG=arch/arm64/configs/vendor/oplus/pineapple_GKl.config
 
-          echo "================================================="
-          echo "STEP 0: Cleaning workspace"
-          echo "================================================="
-          rm -rf out
-          make $MAKE_ARGS mrproper
-
-          # -------------------------------------------------------
-      
-          # --- Kernel Configuration and Build Process ---
-          echo "================================================="
+          # --- Build Process ---
           echo "STEP 1: Applying base gki_defconfig"
-          echo "================================================="
-          make -j$(nproc --all) O=out $MAKE_ARGS $GKI_DEFCONFIG
-      
-          echo "================================================="
-          echo "STEP 2: Merging vendor/pineapple_GKl.config"
-          echo "================================================="
-          scripts/kconfig/merge_config.sh -m out/.config $VENDOR_PINEAPPLE_CONFIG
-      
-          echo "================================================="
-          echo "STEP 3: Merging vendor/oplus/pineapple_GKl.config"
-          echo "================================================="
-          scripts/kconfig/merge_config.sh -m out/.config $VENDOR_OPLUS_CONFIG
+          make $MAKE_ARGS $GKI_DEFCONFIG
 
-          echo "================================================="
-          echo "DEBUG: Checking for untracked/modified files..."
-          echo "================================================="
-          git status
-          # -------------------------------------------------------
-      
-          echo "================================================="
-          echo "STEP 4: Updating configuration with olddefconfig"
-          echo "================================================="
-          make -j$(nproc --all) O=out $MAKE_ARGS olddefconfig
+          echo "STEP 2: Merging vendor configs"
+          scripts/kconfig/merge_config.sh -m out/.config $VENDOR_PINEAPPLE_CONFIG $VENDOR_OPLUS_CONFIG
+
+          echo "STEP 3: Updating configuration with olddefconfig"
+          make $MAKE_ARGS olddefconfig
           
-          echo "================================================="
-          echo "STEP 5: Starting the main kernel build"
-          echo "================================================="
-          make -j$(nproc --all) O=out $MAKE_ARGS Image
-      
+          echo "STEP 4: Starting the main kernel build"
+          make -j$(nproc --all) $MAKE_ARGS
+
           echo "Build finished."
           ccache -s
 
