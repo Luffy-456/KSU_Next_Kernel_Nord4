@@ -584,6 +584,13 @@ jobs:
           GKI_DEFCONFIG=gki_defconfig
           VENDOR_PINEAPPLE_CONFIG=arch/arm64/configs/vendor/pineapple_GKI.config
           VENDOR_OPLUS_CONFIG=arch/arm64/configs/vendor/oplus/pineapple_GKI.config
+
+          echo "================================================="
+          echo "STEP 0: Cleaning workspace"
+          echo "================================================="
+          rm -rf out
+          make $MAKE_ARGS mrproper
+          # -------------------------------------------------------
       
           # --- Kernel Configuration and Build Process ---
           echo "================================================="
