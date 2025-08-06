@@ -609,7 +609,7 @@ jobs:
           echo "================================================="
           echo "STEP 5: Starting the main kernel build"
           echo "================================================="
-          make -j$(nproc --all) O=out $MAKE_ARGS
+          make -j$(nproc --all) O=out $MAKE_ARGS Image
       
           echo "Build finished."
           ccache -s
