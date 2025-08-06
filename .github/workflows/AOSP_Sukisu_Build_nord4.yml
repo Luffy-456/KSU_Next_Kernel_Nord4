@@ -588,10 +588,8 @@ jobs:
           echo "================================================="
           echo "STEP 0: Cleaning workspace"
           echo "================================================="
-          cd kernel_workspace/kernel_platform/msm-kernel
-          make ARCH=arm64 mrproper
-          cd -
           rm -rf out
+          make $MAKE_ARGS mrproper
 
           # -------------------------------------------------------
       
@@ -612,9 +610,9 @@ jobs:
           scripts/kconfig/merge_config.sh -m out/.config $VENDOR_OPLUS_CONFIG
 
           echo "================================================="
-          echo "STEP 3.5: Cleaning temporary files from merge script"
+          echo "DEBUG: Checking for untracked/modified files..."
           echo "================================================="
-          rm -f ./.tmp.config.* ./.merge_tmp.config.*
+          git status
           # -------------------------------------------------------
       
           echo "================================================="
