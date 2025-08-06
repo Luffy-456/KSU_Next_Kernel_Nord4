@@ -534,10 +534,11 @@ jobs:
           sed -i 's/^CONFIG_LTO_CLANG_FULL=y/CONFIG_LTO_CLANG_THIN=y/' "$DEFCONFIG"
           sed -i 's/^CONFIG_LTO_CLANG_NONE=y/CONFIG_LTO_CLANG_THIN=y/' "$DEFCONFIG"
           grep -q '^CONFIG_LTO_CLANG_THIN=y' "$DEFCONFIG" || echo 'CONFIG_LTO_CLANG_THIN=y' >> "$DEFCONFIG"
-      - name: Build Kernel FAST
+      - name: Build Kernel with Custom Configs
         if: ${{ github.event.inputs.FAST_BUILD == 'true' }}
-        id: fast_build
+        id: build_kernel
         run: |
+          # --- Toolchain and Environment Setup (same as your original script) ---
           KERNEL_VERSION="${{ env.KERNEL_VERSION }}"
           if [[ "$KERNEL_VERSION" == "6.6" ]]; then
             CLANG_PATH="clang-r510928"
@@ -558,21 +559,61 @@ jobs:
             echo "Please consider disabling FAST_BUILD or adding the clang path for this version"
             exit 0
           fi
+      
+          echo "Setting up build environment..."
           export PATH="$GITHUB_WORKSPACE/kernel_workspace/kernel_platform/$CLANG_DIR/clang/host/linux-x86/$CLANG_PATH/bin:$PATH"
           export PATH="/usr/lib/ccache:$PATH"
           export CC="ccache clang"
-          sudo apt install -y libelf-dev ccache
+          sudo apt-get update
+          sudo apt-get install -y libelf-dev ccache
+      
           cd kernel_workspace/kernel_platform/msm-kernel
+      
+          # --- Build Configuration ---
+          echo "Configuring build arguments..."
           MAKE_ARGS="LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
             RUSTC=../../prebuilts/rust/linux-x86/1.73.0b/bin/rustc \
             PAHOLE=../../prebuilts/kernel-build-tools/linux-x86/bin/pahole \
             LD=ld.lld HOSTLD=ld.lld KCFLAGS+=-Wno-error"
+          
           if [[ "$USE_LLVM_IAS" == "true" ]]; then
             MAKE_ARGS="LLVM_IAS=1 $MAKE_ARGS"
           fi
-          make -j$(nproc --all) O=out $MAKE_ARGS gki_defconfig
+      
+          # Define paths to your config files for clarity
+          GKI_DEFCONFIG=arch/arm64/configs/gki_defconfig
+          VENDOR_PINEAPPLE_CONFIG=arch/arm64/configs/vendor/pineapple_GKl.config
+          VENDOR_OPLUS_CONFIG=arch/arm64/configs/vendor/oplus/pineapple_GKl.config
+      
+          # --- Kernel Configuration and Build Process ---
+          echo "================================================="
+          echo "STEP 1: Applying base gki_defconfig"
+          echo "================================================="
+          make -j$(nproc --all) O=out $MAKE_ARGS $GKI_DEFCONFIG
+      
+          echo "================================================="
+          echo "STEP 2: Merging vendor/pineapple_GKl.config"
+          echo "================================================="
+          scripts/kconfig/merge_config.sh -m out/.config $VENDOR_PINEAPPLE_CONFIG
+      
+          echo "================================================="
+          echo "STEP 3: Merging vendor/oplus/pineapple_GKl.config"
+          echo "================================================="
+          scripts/kconfig/merge_config.sh -m out/.config $VENDOR_OPLUS_CONFIG
+      
+          echo "================================================="
+          echo "STEP 4: Updating configuration with olddefconfig"
+          echo "================================================="
+          make -j$(nproc --all) O=out $MAKE_ARGS olddefconfig
+          
+          echo "================================================="
+          echo "STEP 5: Starting the main kernel build"
+          echo "================================================="
           make -j$(nproc --all) O=out $MAKE_ARGS
+      
+          echo "Build finished."
           ccache -s
+
       - name: Fallback to Build Kernel
         if: ${{ github.event.inputs.FAST_BUILD == 'false' || steps.fast_build.outputs.fallback == 'true' }}
         run: |
