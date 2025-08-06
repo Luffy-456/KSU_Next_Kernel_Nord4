@@ -581,7 +581,7 @@ jobs:
           fi
       
           # Define paths to your config files for clarity
-          GKI_DEFCONFIG=arch/arm64/configs/gki_defconfig
+          GKI_DEFCONFIG=gki_defconfig
           VENDOR_PINEAPPLE_CONFIG=arch/arm64/configs/vendor/pineapple_GKl.config
           VENDOR_OPLUS_CONFIG=arch/arm64/configs/vendor/oplus/pineapple_GKl.config
       
