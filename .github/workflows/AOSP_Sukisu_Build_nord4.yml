@@ -572,9 +572,9 @@ jobs:
             LD=ld.lld HOSTLD=ld.lld KCFLAGS+=-Wno-error"
 
           # --- Config Paths ---
-          GKI_DEFCONFIG=arch/arm64/configs/gki_defconfig
+          GKI_DEFCONFIG=gki_defconfig
           VENDOR_PINEAPPLE_CONFIG=arch/arm64/configs/vendor/pineapple_GKI.config
-          VENDOR_OPLUS_CONFIG=arch/arm64/configs/vendor/oplus/pineapple_GKl.config
+          VENDOR_OPLUS_CONFIG=arch/arm64/configs/vendor/oplus/pineapple_GKI.config
 
           # --- Build Process ---
           echo "STEP 1: Applying base gki_defconfig"
