@@ -62,18 +62,15 @@
 ## ✨ Kernel Features
 
 
-✅ SukiSU Ultra
+✅ KernelSU Next
 ✅ SUSFS
-✅ VFS HOOK
-✅ Magic Mount Support (KPM)
 ✅ BBR Support
-✅ ZRAM
 
 
 ## 🙏 Credits
 
-- [SukiSU Ultra](https://github.com/SukiSU-Ultra/SukiSU-Ultra)
-- [ZRAM Module](https://github.com/FurLC/ZRAM-Module)
+- [KSU NEXT](https://github.com/KernelSU-Next/KernelSU-Next)
+- [WILD KERNEL](https://github.com/WildKernels)
 
 > ⚠️ **Disclaimer:**  
 > Flashing custom kernels always comes with risk!  

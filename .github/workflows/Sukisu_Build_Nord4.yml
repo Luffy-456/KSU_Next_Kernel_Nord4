@@ -339,6 +339,11 @@ jobs:
       - name: Add KernelSU Next
         run: |
           cd kernel_workspace/kernel_platform
+          META="${{ github.event.inputs.KSU_META }}"
+          BRANCH_NAME="${META%%/*}"
+          CUSTOM_TAG="${META#*/}"
+          echo "Branch name: $BRANCH_NAME"
+          echo "Custom version identifier: $CUSTOM_TAG"
           curl -LSs "https://raw.githubusercontent.com/pershoot/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
           cd KernelSU-Next
           KSU_VERSION=$(expr $(curl -sI "https://api.github.com/repos/KernelSU-Next/KernelSU-Next/commits?sha=next&per_page=1" | grep -i "link:" | sed -n 's/.*page=\([0-9]*\)>; rel="last".*/\1/p') "+" 10200)
@@ -415,14 +420,6 @@ jobs:
 
           # Remove build configuration check to allow modifications
           sed -i 's/check_defconfig//' ./common/build.config.gki
-
-      - name: Apply Hide Stuff Patches
-        run: |
-          cd kernel_workspace/kernel_platform/common
-          cp ../../SukiSU_patch/69_hide_stuff.patch ./
-          echo "Applying hide stuff patch"
-          patch -p1 -F 3 < 69_hide_stuff.patch
-          echo "hide_stuff_patch complete"
 
       # Custom kernel build time, do not add #1 SMP PREEMPT
       - name: Custom BUILD_TIME
